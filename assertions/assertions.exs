@@ -13,8 +13,8 @@ defmodule Assertions.Test do
   def assert(:==, lhs, rhs) do
     IO.puts """
     FAILURE:
-      Expected:    #{lhs}
-      to be equal: #{rhs}
+      Expected:       #{lhs}
+      to be equal to: #{rhs}
     """
   end
 
