@@ -10,9 +10,7 @@ defmodule Assertion do
 
   defmacro __before_compile__(_env) do
     quote do
-      def run do
-        IO.puts "Running the tests... #{inspect @tests}"
-      end
+      def run, do: Assertion.Test.run @tests, __MODULE__
     end
   end
 
@@ -32,25 +30,39 @@ defmodule Assertion do
 end
 
 defmodule Assertion.Test do
+  def run(tests, module) do
+    Enum.each tests, fn {test_func, description} ->
+      case apply(module, test_func, []) do
+        :ok -> IO.write "."
+        {:fail, reason} -> IO.puts """
+
+        FAILURE: #{description}
+        ==================================
+        #{reason}
+        """
+      end
+    end
+  end
+
   def assert(:==, lhs, rhs) when lhs == rhs do
-    IO.write "."
+    :ok
   end
   def assert(:==, lhs, rhs) do
-    IO.puts """
-    FAILURE:
+    {:fail, """
       Expected:       #{lhs}
       to be equal to: #{rhs}
     """
+    }
   end
 
   def assert(:>, lhs, rhs) when lhs > rhs do
-    IO.write "."
+    :ok
   end
   def assert(:>, lhs, rhs) do
-    IO.puts """
-    FAILURE:
+    {:fail, """
       Expected:           #{lhs}
       to be greater than: #{rhs}
     """
+    }
   end
 end
