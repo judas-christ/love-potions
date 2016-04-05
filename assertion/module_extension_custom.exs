@@ -1,5 +1,5 @@
 defmodule Assertion do
-  defmacro extend(options \\ []) do
+  defmacro __using__(_options) do
     quote do
       import unquote(__MODULE__)
 
@@ -11,6 +11,5 @@ defmodule Assertion do
 end
 
 defmodule MathTest do
-  require Assertion
-  Assertion.extend
+  use Assertion
 end
