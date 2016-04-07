@@ -23,11 +23,14 @@ defmodule Translator do
       deftranslations(locale, "", mappings)
     end
 
-    quote do
+    final_ast = quote do
       def t(locale, path, bindings \\ [])
       unquote(translations_ast)
       def t(_locale, _path, _bindings), do: {:error, :no_translation}
     end
+
+    # IO.puts Macro.to_string final_ast
+    final_ast
   end
 
   defp deftranslations(locale, current_path, mappings) do
@@ -46,7 +49,16 @@ defmodule Translator do
   end
 
   defp interpolate(string) do
-    string
+    ~r/(?<head>)%{[^}]+}(?<tail>)/
+    |> Regex.split(string, on: [:head, :tail])
+    |> Enum.reduce("", fn
+      <<"%{" <> rest>>, acc ->
+        key = String.to_atom(String.rstrip(rest, ?}))
+        quote do
+          unquote(acc) <> to_string(Dict.fetch!(bindings, unquote(key)))
+        end
+      segment, acc -> quote do: (unquote(acc) <> unquote(segment))
+    end)
   end
 
   defp append_path("", next), do: to_string(next)

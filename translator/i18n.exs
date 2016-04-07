@@ -13,7 +13,7 @@ defmodule I18n do
   locale "sv",
     flash: [
       hello: "Hallå %{first} %{last}!",
-      bye: "Tjing, %{name}"
+      bye: "Tjing, %{name}!"
     ],
     users: [
       title: "Användare"
