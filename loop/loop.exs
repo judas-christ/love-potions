@@ -6,12 +6,16 @@ defmodule Loop do
           if unquote(clause) do
             unquote(block)
           else
-            throw :break
+            break
           end
         end
       catch
         :break -> :ok
       end
     end
+  end
+
+  def break do
+    throw :break
   end
 end
