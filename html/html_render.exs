@@ -34,10 +34,11 @@ defmodule Template do
   def render3 do
     markup do
       div id: "main" do
-        h1 class: "title", do: text("Welcome!")
+        h1 class: "title" do
+          text("Welcome!")
+        end
         div class: "row" do
           div class: "column" do
-            #p "Hello!"
             p do: text "Hello!"
           end
         end
